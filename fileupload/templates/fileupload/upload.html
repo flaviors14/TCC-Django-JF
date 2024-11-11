@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload de Arquivos CSV V2MODIFY</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head> 
+<body class="container mt-5">
+    <h1 class="mb-4">Envie seus arquivos CSV</h1>
+    <form method="post" enctype="multipart/form-data" class="mb-3">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="file1" class="form-label">Escolha o primeiro arquivo CSV:</label>
+            <input type="file" name="file1" accept=".csv" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="file2" class="form-label">Escolha o segundo arquivo CSV:</label>
+            <input type="file" name="file2" accept=".csv" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Enviar</button>
+    </form>
+    {% if result %}
+        <h2>Arquivo Processado:</h2>
+            <a href="{% url 'download_file' result %}">Download da Base Filtrada</a>
+            <a href="{% url 'show_articles' result %}">
+                <button>Exibir Lista de Artigos</button>
+            </a>
+    {% endif %}
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+
+</body>
+</html>

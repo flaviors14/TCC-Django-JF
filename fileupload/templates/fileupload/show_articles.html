@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Artigos Filtrados</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h2 { margin-bottom: 20px; }
+        .article { border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; }
+        .filters { margin-bottom: 20px; }
+        .filters select, .filters button { margin-right: 10px; }
+        .filters label { margin-right: 5px; }
+        .no-articles { color: #888; font-style: italic; }
+    </style>
+</head>
+<body>
+    <h2>Lista de Artigos Filtrados</h2>
+    <form method="get" class="filters">
+        <label for="sort_by">Ordenar por:</label>
+        <select name="sort_by" id="sort_by">
+            <option value="cited_by_desc" {% if request.GET.sort_by == 'cited_by_desc' %}selected{% endif %}>Mais citados</option>
+            <option value="cited_by_asc" {% if request.GET.sort_by == 'cited_by_asc' %}selected{% endif %}>Menos citados</option>
+            <option value="year_desc" {% if request.GET.sort_by == 'year_desc' %}selected{% endif %}>Ano (mais recente)</option>
+            <option value="year_asc" {% if request.GET.sort_by == 'year_asc' %}selected{% endif %}>Ano (mais antigo)</option>
+        </select>
+
+        <label for="publisher">Publicante:</label>
+        <select name="publisher" id="publisher">
+            <option value="">Todos</option>
+            {% for pub in publishers %}
+                <option value="{{ pub }}" {% if request.GET.publisher == pub %}selected{% endif %}>{{ pub }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="source">Repositório:</label>
+        <select name="source" id="source">
+            <option value="">Todos</option>
+            {% for src in sources %}
+                <option value="{{ src }}" {% if request.GET.source == src %}selected{% endif %}>{{ src }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Aplicar Filtros</button>
+    </form>
+
+    {% if articles %}
+        {% for article in articles %}
+            <div class="article">
+                <h3>{{ article.Title }}</h3>
+                <p><small>{{ article.Authors }} - {{ article.Year }} - DOI: {{ article.DOI }} - ISSN: {{ article.ISSN }} - ISBN: {{ article.ISBN }} - CODEN: {{ article.CODEN }}</small></p>
+                <p>{{ article.Abstract }}</p>
+                <a href="{{ article.Link }}" target="_blank">
+                    <button>Consultar Artigo</button>
+                </a>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="no-articles">Nenhum artigo encontrado com os filtros aplicados.</p>
+    {% endif %}
+</body>
+</html>

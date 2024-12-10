@@ -20,12 +20,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
 
-urlpatterns = [
+from fileupload.views import home
 
+urlpatterns = [
+    path('', home, name='home'),  
+    path('accounts/', include('allauth.urls')),
 
     path('admin/', admin.site.urls),
     
-    path('accounts/', include('allauth.urls')),
 
     path('upload/', include('fileupload.urls')),
     

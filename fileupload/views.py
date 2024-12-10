@@ -7,7 +7,8 @@ import os
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
-
+def home(request):
+    return render(request, 'home.html')
 
 # Defina o diretório onde os arquivos filtrados serão salvos
 FILTERED_FILES_DIR = os.path.join(settings.MEDIA_ROOT, 'filtered_files')

@@ -5,6 +5,9 @@ from django.http import FileResponse, HttpResponse
 import pandas as pd
 import os
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+
+
 
 # Defina o diretório onde os arquivos filtrados serão salvos
 FILTERED_FILES_DIR = os.path.join(settings.MEDIA_ROOT, 'filtered_files')
@@ -12,6 +15,7 @@ FILTERED_FILES_DIR = os.path.join(settings.MEDIA_ROOT, 'filtered_files')
 # Certifique-se de que a pasta existe
 os.makedirs(FILTERED_FILES_DIR, exist_ok=True)
 
+@login_required(login_url="/accounts/login/")
 def show_articles(request, filename):
     file_path = os.path.join(FILTERED_FILES_DIR, filename)
     df = pd.read_excel(file_path)
@@ -50,17 +54,18 @@ def show_articles(request, filename):
         'publishers': publishers,
         'sources': sources,
     }
+  
     return render(request, 'fileupload/show_articles.html', context)
 
 
-
+@login_required(login_url="/accounts/login/")
 def upload_form(request):
     if request.method == 'POST':
         file1 = request.FILES.get('file1')
         file2 = request.FILES.get('file2')
 
         if not file1 or not file2:
-            return render(request, 'fileupload/upload.html', {'error': 'Por favor, envie os dois arquivos CSV.'})
+            return render(request, 'fileupload/upload..html', {'error': 'Por favor, envie os dois arquivos CSV.'})
         
         # Salvar os arquivos temporariamente
         file1_path = os.path.join(settings.MEDIA_ROOT, file1.name)
@@ -86,29 +91,8 @@ def upload_form(request):
             'result': result_filename,
             'show_filter_button': True  # Adiciona a opção de exibir a lista filtrada
         })
-    
     return render(request, 'fileupload/upload.html')
 
-def login(request):
-
-    return render(request, 'fileupload/login.html')
-
-def cadastro(request):
-    if request.method == "GET":
-        return render(request, 'fileupload/cadastro.html')
-    else:
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        senha = request.POST.get('password')
-
-        user = User.objects.filter(username=username).first()
-        
-        if user:
-            return HttpResponse('Ja existe um usuário com esse nome')
-        else:
-            user = User.objects.create_user(username=username, email=email, password=senha)
-        
-        return HttpResponse('Usuário cadastrado com sucesso')
 
 
 def process_files(file_path_1, file_path_2):
@@ -134,3 +118,5 @@ def process_files(file_path_1, file_path_2):
 def download_file(request, filename):
     file_path = os.path.join(FILTERED_FILES_DIR, filename)
     return FileResponse(open(file_path, 'rb'), as_attachment=True)
+
+

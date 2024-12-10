@@ -21,15 +21,13 @@ from django.conf.urls.static import static
 from django.urls import path, include
 
 urlpatterns = [
+
+
     path('admin/', admin.site.urls),
-
-    path('auth/', include('fileupload.urls')),
-
-    ##path('upload/', include('fileupload.urls')),
-    ## path('login/', include('fileupload.urls'))
-
     
-    
+    path('accounts/', include('allauth.urls')),
+
+    path('upload/', include('fileupload.urls')),
     
 ]
 
